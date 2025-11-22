@@ -37,6 +37,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/api/test")
 @app.post("/api/test")
 def test_api():
     return {"message": "API is working!"}
