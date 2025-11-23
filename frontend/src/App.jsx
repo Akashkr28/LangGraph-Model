@@ -3,18 +3,25 @@ import './App.css'
 
 function App() {
   const [input, setInput] = useState('');
-
   const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
-  const storedThread = localStorage.getItem('thread_id');
-  const defaultThread = storedThread || "thread-" + crypto.randomUUID();
-  localStorage.setItem('thread_id', defaultThread);
-  const thread_id = defaultThread;
+  // Initialize thread_id safely inside useState
+  const [threadId] = useState(() => {
+    const stored = localStorage.getItem('thread_id');
+    if (stored) return stored;
+    
+    // Fallback if crypto is not available
+    const newId = "thread-" + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString());
+    localStorage.setItem('thread_id', newId);
+    return newId;
+  });
 
   useEffect(() => {
+    // Debug: Check if ID stays the same
+    console.log("Current Thread ID:", threadId);
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, threadId]);
 
   function handleKeyPress(e) {
     if(e.key === 'Enter') {
@@ -23,61 +30,61 @@ function App() {
     }
   }
 
+  // Auto-resize textarea
   useEffect(() => {
     const textarea = document.querySelector("textarea");
     if (textarea) {
-      textarea.style.height = "auto"; //reset height
-      textarea.style.height = textarea.scrollHeight + "px"; // adjust height
+      textarea.style.height = "auto"; 
+      textarea.style.height = textarea.scrollHeight + "px"; 
     }
   }, [input]);
 
-  async function testBackend() {
-    const res =await fetch('https://langgraph-model.onrender.com/api/test', {
-      method: 'POST',
-    });
-    const data = await res.json();
-    console.log("Backend response: ", data);
-  }
-
   async function askBackend() {
-    setMessages(prev => [...prev, {role:"user", text: input}]);
+    if (!input.trim()) return;
 
-    const res = await fetch('https://langgraph-model.onrender.com/api/memory-chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ thread_id: thread_id, message: input }),
-  });
+    const userMessage = input;
+    setInput(""); // Clear input immediately for better UX
+    setMessages(prev => [...prev, {role:"user", text: userMessage}]);
 
-  const data = await res.json();
+    try {
+      console.log(`Sending message with Thread ID: ${threadId}`);
+      
+      const res = await fetch('https://langgraph-model.onrender.com/api/memory-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          thread_id: threadId, // Uses the stable state variable
+          message: userMessage 
+        }),
+      });
 
-  setMessages(prev => [...prev, {role:"assistant", text: data.response}])
-  setInput("");
+      const data = await res.json();
+      setMessages(prev => [...prev, {role:"assistant", text: data.response}])
+    } catch (error) {
+      console.error("API Error:", error);
+      setMessages(prev => [...prev, {role:"assistant", text: "Error connecting to server."}])
+    }
   }
 
   return (
-    <>
-      <h1>LangBot.io</h1>
+    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+      <h1 style={{ textAlign: 'center' }}>LangBot.io</h1>
       
-      <div style={{display: "flex", alignItems: "baseline"}}>
-        <textarea 
-          type="text"
-          placeholder='Ask a question...'
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyPress}
-          rows={1}
-          style={{ padding: '8px', width: '300px', marginTop: '20px', resize: 'none', overflow: 'hidden' }}
-          />
-
-        <button onClick={askBackend} style={{marginLeft: '10px'}}>
-          Ask
-        </button>
-
-      </div>
-
-      <div style={{marginTop: "20px", maxHeight: "400px", overflowY: "auto"}}>
+      {/* Messages Area */}
+      <div style={{
+          marginTop: "20px", 
+          maxHeight: "60vh", 
+          overflowY: "auto", 
+          border: "1px solid #333",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+          backgroundColor: '#1a1a1a'
+        }}>
+        {messages.length === 0 && <p style={{opacity: 0.5, color: '#aaa', textAlign: 'center'}}>No messages yet.</p>}
+        
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -89,23 +96,63 @@ function App() {
             <span
               style={{
                 display: "inline-block",
-                padding: "10px",
-                textAlign: msg.role === "user" ? "right" : "left",
-                backgroundColor: msg.role === "user" ? "black" : "blue",
-                textColor: msg.role === "user" ? "white" : "white",
+                padding: "10px 15px",
+                borderRadius: "10px",
+                textAlign: "left",
+                backgroundColor: msg.role === "user" ? "#007bff" : "#333",
+                color: "white",
                 maxWidth: "80%",
+                wordWrap: "break-word"
               }}
             >
               {msg.text}
             </span>
           </div>
         ))}
-
+        <div ref={bottomRef}></div>
       </div>
 
-      <div ref={bottomRef}></div>
+      {/* Input Area */}
+      <div style={{display: "flex", alignItems: "flex-end", gap: "10px"}}>
+        <textarea 
+          placeholder='Ask a question...'
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyPress}
+          rows={1}
+          style={{ 
+            flex: 1, 
+            padding: '12px', 
+            borderRadius: '5px',
+            resize: 'none', 
+            minHeight: '45px',
+            backgroundColor: '#222',
+            color: 'white',
+            border: '1px solid #444',
+            outline: 'none'
+          }}
+          />
 
-    </>
+        <button 
+          onClick={askBackend} 
+          style={{
+            height: '45px', 
+            padding: '0 20px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}>
+          Ask
+        </button>
+      </div>
+      
+      <p style={{fontSize: "10px", color: "#666", marginTop: "10px", textAlign: 'center'}}>
+        Session ID: {threadId}
+      </p>
+    </div>
   )
 }
 
