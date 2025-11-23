@@ -7,6 +7,11 @@ function App() {
   const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
+  const storedThread = localStorage.getItem('thread_id');
+  const defaultThread = storedThread || "thread-" + crypto.randomUUID();
+  localStorage.setItem('thread_id', defaultThread);
+  const thread_id = defaultThread;
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -37,12 +42,12 @@ function App() {
   async function askBackend() {
     setMessages(prev => [...prev, {role:"user", text: input}]);
 
-    const res = await fetch('https://langgraph-model.onrender.com/api/ask', {
+    const res = await fetch('https://langgraph-model.onrender.com/api/memory-chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: input }),
+      body: JSON.stringify({ thread_id: thread_id, message: input }),
   });
 
   const data = await res.json();

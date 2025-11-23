@@ -2,12 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from code_graph import graph as code_graph
 from fastapi.middleware.cors import CORSMiddleware
+from memory_graph import memory_graph
 from graph import graph
 
 app = FastAPI()
 
 class QueryRequest(BaseModel):
     query: str
+
+class MemoryRequest(BaseModel):
+    thread_id: str
+    message: str
 
 @app.post("/api/ask")
 def ask_question(request: QueryRequest):
@@ -28,6 +33,18 @@ def ask_code(request: QueryRequest):
     }
     result = code_graph.invoke(state)
     return result
+
+@app.post("/api/memory-chat")
+def memory_chat(req: MemoryRequest):
+    config = {"configurable": {"thread_id": req.thread_id}}
+
+    result = memory_graph.invoke(
+        {"messages": [{"role": "user", "content": req.message}]},
+        config
+    )
+
+    assistant_reply = result["messages"][-1].content
+    return {"response": assistant_reply}
 
 app.add_middleware(
     CORSMiddleware,
