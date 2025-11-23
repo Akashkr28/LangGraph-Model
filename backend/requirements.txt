@@ -4,6 +4,6 @@ uvicorn
 python-dotenv
 openai
 langchain
-langgraph
+langgraph==1.0.3
 pydantic
 typing-extensions
