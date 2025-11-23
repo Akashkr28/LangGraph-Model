@@ -5,5 +5,7 @@ python-dotenv
 openai
 langchain
 langgraph==1.0.3
+langgraph-checkpoint-redis
+redis
 pydantic
 typing-extensions
