@@ -69,19 +69,23 @@ function App() {
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ textAlign: 'center' }}>LangBot.io</h1>
+    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '100vw', margin: '0 auto', padding: '20px', height: '95vh' }}>
+      <h1 style={{ 
+        textAlign: 'left', 
+        color: '#007bff',
+        margin: 0}}>LangBot.io</h1>
       
       {/* Messages Area */}
       <div style={{
           marginTop: "20px", 
-          maxHeight: "60vh", 
+          height: "70vh", 
           overflowY: "auto", 
           border: "1px solid #333",
           padding: "20px",
           borderRadius: "10px",
           marginBottom: "20px",
-          backgroundColor: '#1a1a1a'
+          backgroundColor: '#1a1a1a',
+          marginLeft: '280px'
         }}>
         {messages.length === 0 && <p style={{opacity: 0.5, color: '#aaa', textAlign: 'center'}}>No messages yet.</p>}
         
@@ -113,7 +117,7 @@ function App() {
       </div>
 
       {/* Input Area */}
-      <div style={{display: "flex", alignItems: "flex-end", gap: "10px"}}>
+      <div style={{display: "flex", alignItems: "flex-end", gap: "10px", justifyContent: ""}}>
         <textarea 
           placeholder='Ask a question...'
           value={input}
@@ -122,10 +126,10 @@ function App() {
           rows={1}
           style={{ 
             flex: 1, 
-            padding: '12px', 
-            borderRadius: '5px',
+            padding: '5px', 
+            borderRadius: '10px',
             resize: 'none', 
-            minHeight: '45px',
+            minHeight: '40px',
             backgroundColor: '#222',
             color: 'white',
             border: '1px solid #444',
