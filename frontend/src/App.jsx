@@ -82,10 +82,11 @@ function App() {
           overflowY: "auto", 
           border: "1px solid #333",
           padding: "20px",
-          borderRadius: "10px",
+          borderRadius: "10px", 
           marginBottom: "20px",
           backgroundColor: '#1a1a1a',
-          marginLeft: '280px'
+          margin: "10px 40px",
+          boxShadow: "rgb(47 99 34 / 35%) 0px 5px 15px",
         }}>
         {messages.length === 0 && <p style={{opacity: 0.5, color: '#aaa', textAlign: 'center'}}>No messages yet.</p>}
         
@@ -117,7 +118,7 @@ function App() {
       </div>
 
       {/* Input Area */}
-      <div style={{display: "flex", alignItems: "flex-end", gap: "10px", justifyContent: ""}}>
+      <div style={{display: "flex", alignItems: "flex-end", gap: "10px", justifyContent: "", margin: "20px 40px"}}>
         <textarea 
           placeholder='Ask a question...'
           value={input}
@@ -133,7 +134,8 @@ function App() {
             backgroundColor: '#222',
             color: 'white',
             border: '1px solid #444',
-            outline: 'none'
+            outline: 'none',
+            height: '10px',
           }}
           />
 
