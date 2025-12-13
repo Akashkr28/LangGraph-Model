@@ -1,163 +1,159 @@
-import { useState, useRef, useEffect } from 'react'
-import './App.css'
+import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown'
+import './App.css';
+
+// Simple SVG Icons components to keep it zero-dependency
+const SendIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+);
+
+const BotIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+);
+
+const UserIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+);
 
 function App() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Added loading state
   const bottomRef = useRef(null);
 
-  // Initialize thread_id safely inside useState
   const [threadId] = useState(() => {
     const stored = localStorage.getItem('thread_id');
     if (stored) return stored;
-    
-    // Fallback if crypto is not available
     const newId = "thread-" + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString());
     localStorage.setItem('thread_id', newId);
     return newId;
   });
 
   useEffect(() => {
-    // Debug: Check if ID stays the same
-    console.log("Current Thread ID:", threadId);
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, threadId]);
-
-  function handleKeyPress(e) {
-    if(e.key === 'Enter') {
-      e.preventDefault();
-      askBackend();
-    }
-  }
+  }, [messages, isLoading]); // Scroll when loading starts too
 
   // Auto-resize textarea
   useEffect(() => {
     const textarea = document.querySelector("textarea");
     if (textarea) {
-      textarea.style.height = "auto"; 
-      textarea.style.height = textarea.scrollHeight + "px"; 
+      textarea.style.height = "auto";
+      textarea.style.height = Math.min(textarea.scrollHeight, 200) + "px"; // Cap height at 200px
     }
   }, [input]);
 
+  function handleKeyPress(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { // Allow Shift+Enter for new line
+      e.preventDefault();
+      askBackend();
+    }
+  }
+
   async function askBackend() {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = input;
-    setInput(""); // Clear input immediately for better UX
-    setMessages(prev => [...prev, {role:"user", text: userMessage}]);
+    setInput("");
+    
+    // Add user message immediately
+    setMessages(prev => [...prev, { role: "user", text: userMessage }]);
+    setIsLoading(true);
 
     try {
-      console.log(`Sending message with Thread ID: ${threadId}`);
-      
       const res = await fetch('https://langgraph-model.onrender.com/api/memory-chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          thread_id: threadId, // Uses the stable state variable
-          message: userMessage 
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thread_id: threadId, message: userMessage }),
       });
 
       const data = await res.json();
-      setMessages(prev => [...prev, {role:"assistant", text: data.response}])
+      setMessages(prev => [...prev, { role: "assistant", text: data.response }]);
     } catch (error) {
       console.error("API Error:", error);
-      setMessages(prev => [...prev, {role:"assistant", text: "Error connecting to server."}])
+      setMessages(prev => [...prev, { role: "assistant", text: "Sorry, I encountered an error connecting to the server." }]);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '100vw', margin: '0 auto', padding: '20px', height: '95vh' }}>
-      <h1 style={{ 
-        textAlign: 'left', 
-        color: '#007bff',
-        margin: 0}}>LangBot.io</h1>
+    <div className="app-container">
+      {/* Header */}
+      <header className="header">
+        <div className="logo-text">
+          LangBot<span className="logo-highlight">.io</span>
+        </div>
+      </header>
       
       {/* Messages Area */}
-      <div style={{
-          marginTop: "20px", 
-          height: "70vh", 
-          overflowY: "auto", 
-          border: "1px solid #333",
-          padding: "20px",
-          borderRadius: "10px", 
-          marginBottom: "20px",
-          backgroundColor: '#1a1a1a',
-          margin: "10px 40px",
-          boxShadow: "rgb(47 99 34 / 35%) 0px 5px 15px",
-        }}>
-        {messages.length === 0 && <p style={{opacity: 0.5, color: '#aaa', textAlign: 'center'}}>No messages yet.</p>}
+      <div className="chat-container">
+        {messages.length === 0 && (
+          <div className="empty-state">
+            <div className="avatar bot-avatar" style={{width: 60, height: 60, marginBottom: 20}}>
+               <BotIcon />
+            </div>
+            <h2>How can I help you today?</h2>
+            <p>Start a conversation to create a new memory thread.</p>
+          </div>
+        )}
         
         {messages.map((msg, index) => (
-          <div
-            key={index}
-            style={{
-              marginBottom: "10px",
-              textAlign: msg.role === "user" ? "right" : "left"
-            }}
-          >
-            <span
-              style={{
-                display: "inline-block",
-                padding: "10px 15px",
-                borderRadius: "10px",
-                textAlign: "left",
-                backgroundColor: msg.role === "user" ? "#007bff" : "#333",
-                color: "white",
-                maxWidth: "80%",
-                wordWrap: "break-word"
-              }}
-            >
-              {msg.text}
-            </span>
+          <div key={index} className={`message-wrapper ${msg.role}`}>
+            {/* Avatar only for Bot messages, or both if you prefer */}
+            <div className={`avatar ${msg.role === 'user' ? 'user-avatar' : 'bot-avatar'}`}>
+              {msg.role === 'user' ? <UserIcon /> : <BotIcon />}
+            </div>
+            
+            <div className={`message-bubble ${msg.role === 'user' ? 'user-msg' : 'bot-msg'}`}>
+              {msg.role === 'assistant' ? (
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              ) : (
+                msg.text)}
+            </div>
           </div>
         ))}
+
+        {/* Loading Indicator */}
+        {isLoading && (
+          <div className="message-wrapper assistant">
+            <div className="avatar bot-avatar">
+              <BotIcon />
+            </div>
+            <div className="message-bubble bot-msg">
+              <div className="typing-indicator">
+                <div className="dot"></div>
+                <div className="dot"></div>
+                <div className="dot"></div>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div ref={bottomRef}></div>
       </div>
 
       {/* Input Area */}
-      <div style={{display: "flex", alignItems: "flex-end", gap: "10px", justifyContent: "", margin: "20px 40px"}}>
-        <textarea 
-          placeholder='Ask a question...'
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyPress}
-          rows={1}
-          style={{ 
-            flex: 1, 
-            padding: '5px', 
-            borderRadius: '10px',
-            resize: 'none', 
-            minHeight: '40px',
-            backgroundColor: '#222',
-            color: 'white',
-            border: '1px solid #444',
-            outline: 'none',
-            height: '10px',
-          }}
+      <div className="input-container">
+        <div className="input-box">
+          <textarea 
+            placeholder='Message LangBot...'
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            rows={1}
           />
-
-        <button 
-          onClick={askBackend} 
-          style={{
-            height: '45px', 
-            padding: '0 20px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}>
-          Ask
-        </button>
+          <button 
+            onClick={askBackend} 
+            className="send-button"
+            disabled={!input.trim() || isLoading}
+          >
+            <SendIcon />
+          </button>
+        </div>
+        <p className="footer-info">
+          Session ID: <span style={{fontFamily: 'monospace'}}>{threadId.slice(0, 8)}...</span>
+        </p>
       </div>
-      
-      <p style={{fontSize: "10px", color: "#666", marginTop: "10px", textAlign: 'center'}}>
-        Session ID: {threadId}
-      </p>
     </div>
   )
 }
