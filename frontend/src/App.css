@@ -86,55 +86,98 @@ body {
 /* Messages */
 .message-wrapper {
   display: flex;
-  gap: 12px;
-  max-width: 85%;
+  gap: 16px; /* More space between avatar and text */
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto; /* Centers the conversation stream */
+  align-items: flex-start; /* IMPORTANT: Aligns avatar to top of long messages */
 }
 
 .message-wrapper.user {
-  align-self: flex-end;
   flex-direction: row-reverse;
+  align-self: flex-end; /* Keeps user right-aligned visually in the stream */
 }
 
 .avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px; /* Slightly softer square */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
   flex-shrink: 0;
+  margin-top: 2px; /* Visual alignment fix */
 }
 
 .bot-avatar {
   background-color: var(--primary-color);
   color: white;
+  box-shadow: 0 2px 8px rgba(47, 129, 247, 0.3);
 }
 
 .user-avatar {
-  background-color: var(--border-color);
-  color: var(--text-secondary);
+  background-color: #30363d;
+  color: #e6edf3;
 }
 
+/* Bubbles */
 .message-bubble {
-  padding: 10px 16px;
+  padding: 12px 18px;
   border-radius: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
   font-size: 0.95rem;
-  white-space: pre-wrap;
+  position: relative;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .bot-msg {
-  background-color: transparent; /* Cleaner look for AI */
+  background-color: #161b22; /* distinct dark grey card */
+  border: 1px solid #30363d; /* subtle border definition */
   color: var(--text-primary);
-  padding-left: 0; /* Align with text */
+  border-radius: 4px 18px 18px 18px; /* distinct shape */
+  width: 100%; /* Allows bot message to take full available width */
+}
+
+.bot-msg p {
+  margin: 0 0 10px 0;
+}
+
+.bot-msg p:last-child {
+  margin-bottom: 0;
+}
+
+.bot-msg pre {
+  background-color: #0d1117;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 10px 0;
+  border: 1px solid #30363d;
+}
+
+.bot-msg pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 100%;
+  color: #e6edf3;
+}
+
+.bot-msg ul, .bot-msg ol {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.bot-msg li {
+  margin-bottom: 4px;
 }
 
 .user-msg {
   background-color: var(--user-msg-bg);
   color: white;
-  border-radius: 12px 12px 2px 12px; /* Subtle shape */
+  border-radius: 18px 18px 4px 18px; /* distinct shape */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 /* Empty State */
