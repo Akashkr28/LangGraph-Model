@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown'
-import './App.css';
+import '../App.css';
+import './ChatPage.css';
 
 // Simple SVG Icons components to keep it zero-dependency
 const SendIcon = () => (

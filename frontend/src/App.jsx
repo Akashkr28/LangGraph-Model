@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import ChatPage from './pages/ChatPage';
+import './App.css';
 
 function App() {
   const isAuthenticated = false; // Replace with real authentication logic
