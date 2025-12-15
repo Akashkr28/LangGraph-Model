@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+} from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 import '../App.css';
 
 const GoogleIcon = () => (
@@ -31,24 +37,8 @@ const PhoneIcon = () => (
 );
 
 const EmailIcon = () => (
-    <svg
-        width="20"
-        height="20"
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke='currentColor'
-        strokeWidth='2'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-    >
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
-            <polyline points="22,6 12,13 2,6"></polyline>
-        </path>
-    </svg>
-)
-
-const LockIcon = () => (
     <svg 
+        xmlns="http://www.w3.org/2000/svg" 
         width="20" 
         height="20" 
         viewBox="0 0 24 24" 
@@ -57,26 +47,68 @@ const LockIcon = () => (
         strokeWidth="2" 
         strokeLinecap="round" 
         strokeLinejoin="round"
-    >
-        <rect x="3" y="11" 
-            width="18" 
-            height="11" 
-            rx="2" 
-            ry="2"
-        ></rect>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+    ><rect 
+        width="20" 
+        height="16" 
+        x="2" 
+        y="4" 
+        rx="2"
+    /><path 
+        d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
+    />
     </svg>
-  );
+);
+
+const LockIcon = () => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="20" 
+        height="20" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" s
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+    ><rect 
+        width="18" 
+        height="11" 
+        x="3" y="11" 
+        rx="2" ry="2"
+    /><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+);
 
 export default function AuthForm() {
     const [isLogin, setIsLogin] = useState(true); // true for login, false for signup
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null); // To show login errors
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(isLogin ? 'Logging in' : 'Signing up', { email, password });
-    }
+        setError(''); // Reset error message
+
+        try {
+            if (isLogin) {
+                // Log in Logic
+                await signInWithEmailAndPassword(auth, email, password);
+            } else {
+                // Sign up Logic
+                await createUserWithEmailAndPassword(auth, email, password);
+            }            
+        } catch (err) {
+            setError(err.message.replace('Firebase: ', ''));
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (err) {
+            setError(err.message.replace('Firebase: ', ''));
+        }
+    };
 
     return (
         <div className='auth-card'>
@@ -84,6 +116,17 @@ export default function AuthForm() {
                 <h2>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
                 <p>{isLogin ? 'Enter your credentials to sign in.' : 'Start your journey with Langbot.'}</p>
             </div>
+
+            {error && 
+                <p 
+                    style={{
+                        color: '#ff6b6b',
+                        textAlign: 'center',
+                        margin: '0',
+                    }}
+                >
+                    {error}    
+                </p>}
 
             <form onSubmit={handleSubmit} className='form-group'>
 
@@ -138,10 +181,14 @@ export default function AuthForm() {
             <div className='divider'>OR CONTINUE WITH</div>
 
             <div className='social-buttons'>
-                <button className='social-btn'>
+                <button 
+                    type='button' 
+                    className='social-btn'
+                    onClick={handleGoogleLogin}    
+                >
                     <GoogleIcon/> Google
                 </button>
-                <button className='social-btn'>
+                <button  type='button' className='social-btn'>
                     <PhoneIcon/> Mobile
                 </button>
             </div>
