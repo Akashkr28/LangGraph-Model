@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown'
+import { signOut, deleteUser } from 'firebase/auth';
+import { auth } from '../firebase';
 import '../App.css';
 import './ChatPage.css';
 
@@ -14,6 +16,10 @@ const BotIcon = () => (
 
 const UserIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+);
+
+const LogoutIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
 );
 
 export default function ChatPage() {
@@ -42,6 +48,35 @@ export default function ChatPage() {
       textarea.style.height = Math.min(textarea.scrollHeight, 200) + "px"; // Cap height at 200px
     }
   }, [input]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // App.jsx will automatically redirect you to LandingPage
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your account? This cannot be undone."
+    );
+
+    if (confirmDelete && auth.currentUser) {
+      try {
+        await deleteUser(auth.currentUser);
+        alert("Account deleted.");
+      } catch (error) {
+        if (error.code === 'auth/requires-recent-login') {
+          alert("Security: Please log out and log back in before deleting your account.");
+        } else {
+          console.error("Error deleting account:", error);
+          alert(error.message);
+        }
+      }
+    }
+  };
 
   function handleKeyPress(e) {
     if (e.key === 'Enter' && !e.shiftKey) { // Allow Shift+Enter for new line
@@ -84,6 +119,27 @@ export default function ChatPage() {
         <div className="logo-text">
           LangBot<span className="logo-highlight">.io</span>
         </div>
+        
+        {/* --- NEW: Header Actions --- */}
+        <div className="header-actions">
+          <button 
+            onClick={handleLogout} 
+            className='btn-logout'
+            title="Log Out"
+          >
+            <LogoutIcon /> 
+            <span>Logout</span>
+          </button>
+
+          <button 
+            onClick={handleDeleteAccount} 
+            className='btn-delete'
+          >
+            Delete
+          </button>
+        </div>
+        {/* --------------------------- */}
+
       </header>
       
       {/* Messages Area */}
@@ -100,7 +156,6 @@ export default function ChatPage() {
         
         {messages.map((msg, index) => (
           <div key={index} className={`message-wrapper ${msg.role}`}>
-            {/* Avatar only for Bot messages, or both if you prefer */}
             <div className={`avatar ${msg.role === 'user' ? 'user-avatar' : 'bot-avatar'}`}>
               {msg.role === 'user' ? <UserIcon /> : <BotIcon />}
             </div>
@@ -114,7 +169,6 @@ export default function ChatPage() {
           </div>
         ))}
 
-        {/* Loading Indicator */}
         {isLoading && (
           <div className="message-wrapper assistant">
             <div className="avatar bot-avatar">
