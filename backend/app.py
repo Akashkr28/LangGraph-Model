@@ -1,60 +1,120 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from code_graph import graph as code_graph
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from memory_graph import memory_graph
-from graph import graph
+from pydantic import BaseModel
+from mem0 import Memory
+from openai import OpenAI
+import os
+import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
-class QueryRequest(BaseModel):
-    query: str
-
-class MemoryRequest(BaseModel):
-    thread_id: str
-    message: str
-
-@app.post("/api/ask")
-def ask_question(request: QueryRequest):
-    state = {
-        "query": request.query,
-        "llm_result": None
-    }
-    result = graph.invoke(state)
-    return {"response": result["llm_result"]}
-
-@app.post("/api/code")
-def ask_code(request: QueryRequest):
-    state = {
-        "user_query": request.query,
-        "llm_result": None,
-        "accuracy_percentage": None,
-        "is_coding_question": False
-    }
-    result = code_graph.invoke(state)
-    return result
-
-@app.post("/api/memory-chat")
-def memory_chat(req: MemoryRequest):
-    config = {"configurable": {"thread_id": req.thread_id}}
-
-    result = memory_graph.invoke(
-        {"messages": [{"role": "user", "content": req.message}]},
-        config
-    )
-
-    assistant_reply = result["messages"][-1].content
-    return {"response": assistant_reply}
-
+# --- CORS SETUP ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/api/test")
-@app.post("/api/test")
-def test_api():
-    return {"message": "API is working!"}
+# --- CONFIGURATION ---
+# We use the config structure you provided earlier
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+mem0_config = {
+    "version": "v1.1",
+    "embedder": {
+        "provider": "openai",
+        "config": {
+            "api_key": OPENAI_API_KEY,
+            "model": "text-embedding-3-small"
+        }
+    },
+    "llm": { 
+        "provider": "openai", 
+        "config": {
+            "api_key": OPENAI_API_KEY, 
+            "model": "gpt-4-turbo" 
+        } 
+    },
+    "vector_store": {
+        "provider": "qdrant",
+        "config": {
+            "host": "localhost", # Assumes local Docker
+            "port": 6333
+        }
+    },
+    "graph_store": {
+        "provider": "neo4j",
+        "config": {
+            "url": "bolt://localhost:7687", # Assumes local Docker
+            "username": "neo4j",
+            "password": "reform-william-center-vibrate-press-5829", # UPDATE THIS
+            "database": "neo4j"
+        }
+    }
+}
+
+# Initialize Clients
+memory_client = Memory.from_config(mem0_config)
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
+
+# --- Data Models ---
+class ChatRequest(BaseModel):
+    message: str
+    user_id: str # Crucial: Mem0 attaches memories to a User ID
+
+class ChatResponse(BaseModel):
+    response: str
+
+# --- API Endpoint ---
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat_endpoint(req: ChatRequest):
+    try:
+        # 1. RETRIEVE MEMORIES (The "Second Brain" part)
+        # Search for past memories relevant to the current user message
+        relevant_memories = memory_client.search(query=req.message, user_id=req.user_id)
+        
+        # Format memories for the AI
+        memories_text = [
+            f"Memory: {mem.get('memory')}" for mem in relevant_memories.get("results", [])
+        ]
+        
+        system_prompt = f"""
+        You are a helpful assistant with access to the user's long-term memory.
+        Use the following relevant memories to personalize your answer:
+        {json.dumps(memories_text)}
+        """
+
+        # 2. GENERATE RESPONSE
+        completion = openai_client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": req.message}
+            ]
+        )
+        ai_response = completion.choices[0].message.content
+
+        # 3. SAVE NEW MEMORY
+        # Add the interaction to mem0 so it's remembered next time
+        memory_client.add(
+            [
+                {"role": "user", "content": req.message},
+                {"role": "assistant", "content": ai_response}
+            ], 
+            user_id=req.user_id
+        )
+
+        return ChatResponse(response=ai_response)
+
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

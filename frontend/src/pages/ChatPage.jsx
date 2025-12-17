@@ -86,27 +86,40 @@ export default function ChatPage() {
   }
 
   async function askBackend() {
+    // 1. Validation (Same as before)
     if (!input.trim() || isLoading) return;
 
     const userMessage = input;
     setInput("");
     
-    // Add user message immediately
+    // 2. Optimistic UI Update (Same as before - shows user msg instantly)
     setMessages(prev => [...prev, { role: "user", text: userMessage }]);
     setIsLoading(true);
 
+    // 3. Get User ID (NEW: Needed for mem0 memory)
+    const uid = auth.currentUser ? auth.currentUser.uid : "anonymous";
+
     try {
-      const res = await fetch('https://langgraph-model.onrender.com/api/memory-chat', {
+      // 4. THE ONLY CHANGE: Pointing to Localhost + Sending user_id
+      const res = await fetch('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ thread_id: threadId, message: userMessage }),
+        body: JSON.stringify({ 
+            message: userMessage, 
+            user_id: uid 
+        }),
       });
 
+      if (!res.ok) throw new Error("Server error");
+
       const data = await res.json();
+      
+      // 5. State Update (Same as before - data.response matches your backend)
       setMessages(prev => [...prev, { role: "assistant", text: data.response }]);
+      
     } catch (error) {
       console.error("API Error:", error);
-      setMessages(prev => [...prev, { role: "assistant", text: "Sorry, I encountered an error connecting to the server." }]);
+      setMessages(prev => [...prev, { role: "assistant", text: "Error connecting to local backend. Is Python running?" }]);
     } finally {
       setIsLoading(false);
     }
