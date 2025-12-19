@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
+import Homepage from './pages/HomePage'; // NEW - aihelp homepage
 import LandingPage from './pages/LandingPage';
 import ChatPage from './pages/ChatPage';
 import './App.css';
@@ -11,7 +12,7 @@ function App() {
   const [isFetching, setIsFetching] = useState(true); // Loading State
 
   useEffect(() => {
-    const unsubscribe =  onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if(user) {
         setUser(user);
         setIsFetching(false);
@@ -27,7 +28,7 @@ function App() {
   if (isFetching) {
     return (
       <div
-        style = {{
+        style={{
           height: '100vh',
           display: 'flex',
           justifyContent: 'center',
@@ -43,12 +44,22 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={user ? <Navigate to='/chat'/> : <LandingPage/>}/>
+        {/* Homepage - accessible to everyone */}
+        <Route 
+          path='/' 
+          element={user ? <Navigate to='/chat'/> : <Homepage />}
+        />
 
-        {/* If Authenticated show chat page, else redirect to landing page */}
+        {/* Landing/Auth Page - redirect if already logged in */}
+        <Route 
+          path='/landing' 
+          element={user ? <Navigate to='/chat'/> : <LandingPage />}
+        />
+
+        {/* Chat Page - only for authenticated users */}
         <Route
           path='/chat'
-          element={user ? <ChatPage /> : <Navigate to="/" />}
+          element={user ? <ChatPage /> : <Navigate to="/landing" />}
         />
       </Routes>
     </BrowserRouter>

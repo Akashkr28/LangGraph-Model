@@ -45,7 +45,7 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.auth-header h2 { margin: 0 0 8px 0; font-size: 1.5rem; }
+.auth-header h2 { margin: 0 0 8px 0; font-size: 1.5rem; color: #0d1117;}
 .auth-header p { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
 
 
