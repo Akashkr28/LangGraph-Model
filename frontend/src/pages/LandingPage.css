@@ -1,23 +1,42 @@
 .landing-page {
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    position: relative;
-    overflow: hidden;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-  }
+  /* 1. Allow it to grow if content is tall (mobile), but at least fill screen (desktop) */
+  min-height: 100vh; 
+  width: 100%; /* Use % instead of vw to avoid scrollbar-width issues */
+  
+  /* 2. visual styling */
+  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+  
+  /* 3. layout centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* 4. Padding is fine, but box-sizing ensures it doesn't add to 100vh */
+  padding: 40px 20px;
+  box-sizing: border-box; 
+  
+  /* 5. VITAL: Relative positioning for the absolute blobs */
+  position: relative;
+  
+  /* 6. Hide ONLY horizontal overflow so blobs don't widen the page */
+  overflow-x: hidden; 
+}
   
   /* Background decorative shapes */
   .landing-shapes {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    z-index: 0;
-  }
+    
+    /* This ensures blobs that fly off-screen don't create scrollbars */
+    overflow: hidden; 
+    
+    /* Push it behind everything */
+    z-index: 0; 
+    pointer-events: none; /* Let clicks pass through */
+}
   
   .landing-blob {
     position: absolute;
@@ -320,3 +339,158 @@
       padding: 20px 10px;
     }
   }
+
+  /* --- Add this to the bottom of LandingPage.css --- */
+
+/* 1. Header Styling inside the card */
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.auth-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #000;
+}
+.auth-header p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 2. Form Layout */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Spacing between inputs */
+  width: 100%;
+}
+
+/* 3. The Container for Input + Icon (Must be relative) */
+.input-wrapper {
+  position: relative !important; /* Forces the icon to position relative to THIS box */
+  width: 100%;
+  padding: 0 !important; /* Fixes "Icon Outside" issue */
+  margin-bottom: 16px; /* Space between inputs */
+  box-sizing: border-box;
+}
+
+/* 4. Position the Icon Absolutely */
+.input-icon {
+  position: absolute !important;
+  left: 16px !important; /* Distance from the left edge */
+  top: 50% !important;
+  transform: translateY(-50%) !important; /* Perfectly centers vertically */
+  z-index: 10;
+  pointer-events: none; /* Allows you to click "through" the icon into the box */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+} 
+
+/* 5. Style the Input Field */
+.auth-input {
+  width: 100%;
+  /* padding: Top Right Bottom Left */
+  padding: 14px 16px 14px 48px !important; /* 48px Left Padding reserves space for icon */
+  margin: 0 !important; /* Fixes "Icon Outside" issue */
+  background: #f8f9fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #333;
+  box-sizing: border-box; /* Ensures padding doesn't expand the width */
+  height: auto;
+}
+
+/* Add padding to left so text doesn't hit the icon */
+.auth-input.with-icon {
+  padding-left: 48px; 
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #2f81f7;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(47, 129, 247, 0.1);
+}
+
+/* 6. Buttons */
+.primary-btn {
+  width: 100%;
+  padding: 14px;
+  background: #2f81f7;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.primary-btn:hover {
+  background: #236cd6;
+}
+
+/* 7. Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  color: #888;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 24px 0;
+}
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #eee;
+}
+.divider::before { margin-right: 12px; }
+.divider::after { margin-left: 12px; }
+
+/* 8. Social Buttons */
+.social-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.social-btn:hover {
+  background: #f8f9fa;
+  border-color: #ccc;
+}
+
+/* 9. Toggle Text */
+.toggle-text {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+.toggle-link {
+  color: #2f81f7;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+}

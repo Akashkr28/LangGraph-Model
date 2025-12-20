@@ -66,9 +66,8 @@ export default function LandingPage() {
 
                 {/* Right side - Auth form */}
                 <div className="auth-section">
-                    <div className="auth-card">
-                        <AuthForm />
-                    </div>
+                    {/* FIXED: Removed the extra <div className="auth-card"> wrapper */}
+                    <AuthForm />
                 </div>
             </div>
         </div>
