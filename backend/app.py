@@ -52,7 +52,7 @@ mem0_config = {
         "config": {
             "url": "bolt://localhost:7687", # Assumes local Docker
             "username": "neo4j",
-            "password": "reform-william-center-vibrate-press-5829", # UPDATE THIS
+            "password": "password", # UPDATE THIS
             "database": "neo4j"
         }
     }
