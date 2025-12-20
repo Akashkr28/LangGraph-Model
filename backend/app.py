@@ -43,8 +43,8 @@ mem0_config = {
     "vector_store": {
         "provider": "qdrant",
         "config": {
-            "host": "localhost", # Assumes local Docker
-            "port": 6333
+            "url": os.getenv("QDRANT_URL"),
+            "api_key": os.getenv("QDRANT_API_KEY"),
         }
     },
     "graph_store": {
