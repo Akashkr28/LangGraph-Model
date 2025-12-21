@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import ThemeToggle from '../components/ThemeToggle';
 import './Homepage.css';
 
 const Homepage = () => {
@@ -26,9 +27,19 @@ const Homepage = () => {
             <li><a href="#here">always here</a></li>
             <li><a href="#interaction">personalized interaction</a></li>
           </ul>
-          <button className="sign-in-btn" onClick={handleSignIn}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
+            <ThemeToggle />
+            <button className="sign-in-btn" onClick={handleSignIn}>
             Sign In
-          </button>
+            </button>
+          </div>
+
         </div>
       </nav>
 

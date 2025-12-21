@@ -494,3 +494,69 @@
   cursor: pointer;
   margin-left: 4px;
 }
+
+/* Add at the end of LandingPage.css */
+
+/* Dark Theme */
+.dark .landing-page {
+  background: linear-gradient(to bottom, #0f1117 0%, #1a1d29 100%);
+}
+
+.dark .logo-small,
+.dark .marketing-text h1 {
+  color: #fff;
+}
+
+.dark .bubble {
+  background: #fff;
+}
+
+.dark .marketing-description,
+.dark .feature-item p {
+  color: #aaa;
+}
+
+.dark .feature-item h3 {
+  color: #fff;
+}
+
+.dark .feature-icon {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .auth-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .auth-header h2 {
+  color: #fff;
+}
+
+.dark .auth-header p {
+  color: #aaa;
+}
+
+.dark .auth-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+.dark .auth-input::placeholder {
+  color: #666 !important;
+}
+
+.dark .social-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dark .social-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .toggle-text {
+  color: #aaa;
+}

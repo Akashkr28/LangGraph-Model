@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
+import { ThemeProvider } from './context/ThemeContext';
 import Homepage from './pages/HomePage'; // NEW - aihelp homepage
 import LandingPage from './pages/LandingPage';
 import ChatPage from './pages/ChatPage';
@@ -42,27 +43,29 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Homepage - accessible to everyone */}
-        <Route 
-          path='/' 
-          element={user ? <Navigate to='/chat'/> : <Homepage />}
-        />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Homepage - accessible to everyone */}
+          <Route 
+            path='/' 
+            element={user ? <Navigate to='/chat'/> : <Homepage />}
+          />
 
-        {/* Landing/Auth Page - redirect if already logged in */}
-        <Route 
-          path='/landing' 
-          element={user ? <Navigate to='/chat'/> : <LandingPage />}
-        />
+          {/* Landing/Auth Page - redirect if already logged in */}
+          <Route 
+            path='/landing' 
+            element={user ? <Navigate to='/chat'/> : <LandingPage />}
+          />
 
-        {/* Chat Page - only for authenticated users */}
-        <Route
-          path='/chat'
-          element={user ? <ChatPage /> : <Navigate to="/landing" />}
-        />
-      </Routes>
-    </BrowserRouter>
+          {/* Chat Page - only for authenticated users */}
+          <Route
+            path='/chat'
+            element={user ? <ChatPage /> : <Navigate to="/landing" />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

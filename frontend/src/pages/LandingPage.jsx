@@ -1,5 +1,6 @@
 import React from "react";
 import AuthForm from "../components/AuthForm";
+import ThemeToggle from "../components/ThemeToggle";
 import './LandingPage.css';
 
 export default function LandingPage() {
@@ -7,6 +8,9 @@ export default function LandingPage() {
 
     return (
         <div className="landing-page">
+            {/* <div className="landing-header">
+                <ThemeToggle />
+            </div> */}
             {/* Background decorative shapes */}
             <div className="landing-shapes">
                 <div className="landing-blob landing-blob-1"></div>

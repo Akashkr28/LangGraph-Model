@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown'
 import { signOut, deleteUser } from 'firebase/auth';
+import ThemeToggle from '../components/ThemeToggle';
 import { auth } from '../firebase';
 import './ChatPage.css';
 
@@ -143,6 +144,7 @@ export default function ChatPage() {
           </div>
           
           <div className="header-actions">
+            <ThemeToggle />
             <button 
               className="menu-toggle"
               onClick={() => setShowMenu(!showMenu)}

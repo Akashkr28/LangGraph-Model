@@ -593,3 +593,83 @@
     max-width: 90%;
   }
 }
+
+/* Add at the end of ChatPage.css */
+
+/* Dark Theme */
+.dark .chat-page {
+  background: linear-gradient(to bottom, #0f1117 0%, #1a1d29 100%);
+}
+
+.dark .chat-header {
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .chat-logo-text {
+  color: #fff;
+}
+
+.dark .bubble {
+  background: #fff;
+}
+
+.dark .btn-logout {
+  background: #fff;
+  color: #000;
+}
+
+.dark .btn-logout:hover {
+  background: #e0e0e0;
+}
+
+.dark .empty-title {
+  color: #fff;
+}
+
+.dark .empty-subtitle {
+  color: #aaa;
+}
+
+.dark .suggestion-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dark .suggestion-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .bot-message {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .user-message {
+  background: #2f81f7;
+}
+
+.dark .input-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .input-box textarea {
+  color: #fff;
+}
+
+.dark .input-box textarea::placeholder {
+  color: #666;
+}
+
+.dark .send-button:not(:disabled) {
+  background: #fff;
+  color: #000;
+}
+
+.dark .input-footer {
+  color: #666;
+}

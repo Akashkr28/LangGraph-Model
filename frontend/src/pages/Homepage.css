@@ -321,3 +321,52 @@
       padding: 0 30px;
     }
   }
+
+/* Add at the end of Homepage.css */
+
+/* Dark Theme */
+.dark .homepage {
+  background: linear-gradient(to bottom, #0f1117 0%, #1a1d29 100%);
+}
+
+.dark .navbar {
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .logo,
+.dark .nav-links a,
+.dark .main-logo-text {
+  color: #fff;
+}
+
+.dark .bubble {
+  background: #fff;
+}
+
+.dark .sign-in-btn {
+  background: #fff;
+  color: #000;
+}
+
+.dark .sign-in-btn:hover {
+  background: #e0e0e0;
+}
+
+.dark .blob,
+.dark .sphere {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.dark .cta-button {
+  background: #fff;
+  color: #000;
+}
+
+.dark .cta-button:hover {
+  background: #e0e0e0;
+}
+
+.dark .footer {
+  color: #999;
+}
