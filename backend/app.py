@@ -50,9 +50,9 @@ mem0_config = {
     "graph_store": {
         "provider": "neo4j",
         "config": {
-            "url": "bolt://localhost:7687", # Assumes local Docker
+            "url": os.getenv("NEO4J_URI"),
             "username": "neo4j",
-            "password": "password", # UPDATE THIS
+            "password": os.getenv("NEO4J_PASSWORD"),
             "database": "neo4j"
         }
     }
