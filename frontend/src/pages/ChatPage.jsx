@@ -6,6 +6,23 @@ import { auth } from '../firebase';
 import './ChatPage.css';
 
 // Simple SVG Icons components to keep it zero-dependency
+const SynapseLogo = () => (
+  <svg
+    width="100%"
+    height="100%"
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke='currentColor'
+    strokeWidth='1.5'
+    strokeLinecap='round'
+    strokeLinejoin='round'  
+  >
+    <circle cx="6" cy="18" r="3"></circle>
+    <circle cx="18" cy="6" r="3"></circle>
+    <path d="M6 15v-3a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3"></path>
+  </svg>
+);
+
 const SendIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
 );
@@ -136,11 +153,9 @@ export default function ChatPage() {
         <div className="chat-header-content">
           <div className="chat-logo">
             <div className="chat-logo-icon">
-              <div className="bubble bubble-1"></div>
-              <div className="bubble bubble-2"></div>
-              <div className="bubble bubble-3"></div>
+              <SynapseLogo />         
             </div>
-            <span className="chat-logo-text">langbot</span>
+            <span className="chat-logo-text">SYNAPSE</span>
           </div>
           
           <div className="header-actions">

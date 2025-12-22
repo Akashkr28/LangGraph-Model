@@ -3,6 +3,24 @@ import AuthForm from "../components/AuthForm";
 import ThemeToggle from "../components/ThemeToggle";
 import './LandingPage.css';
 
+
+const SynapseLogo = () => (
+    <svg
+      width="100%"
+      height="100%"
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='1.5'
+      strokeLinecap='round'
+      strokeLinejoin='round'  
+    >
+      <circle cx="6" cy="18" r="3"></circle>
+      <circle cx="18" cy="6" r="3"></circle>
+      <path d="M6 15v-3a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3"></path>
+    </svg>
+  );
+
 export default function LandingPage() {
     console.log("Landing page is attempting to render");
 
@@ -26,11 +44,9 @@ export default function LandingPage() {
                 <div className="marketing-section">
                     <div className="logo-small">
                         <div className="logo-icon-small">
-                            <div className="bubble bubble-1"></div>
-                            <div className="bubble bubble-2"></div>
-                            <div className="bubble bubble-3"></div>
+                            <SynapseLogo />
                         </div>
-                        <span>langbot</span>
+                        <span>SYNAPSE</span>
                     </div>
 
                     <div className="marketing-text">
