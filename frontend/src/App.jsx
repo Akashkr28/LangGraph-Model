@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import { ThemeProvider } from './context/ThemeContext';
 import { ChatProvider } from './context/ChatContext';
-import Homepage from './pages/Homepage';
+import HomePage from './pages/HomePage';
 import LandingPage from './pages/LandingPage';
 import ChatPage from './pages/ChatPage';
 import './App.css';
@@ -43,7 +43,7 @@ function App() {
           <Routes>
             <Route 
               path='/' 
-              element={user ? <Navigate to='/chat'/> : <Homepage />}
+              element={user ? <Navigate to='/chat'/> : <HomePage />}
             />
             <Route 
               path='/landing' 
