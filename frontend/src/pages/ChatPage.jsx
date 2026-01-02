@@ -124,6 +124,7 @@ export default function ChatPage() {
 
     const uid = auth.currentUser ? auth.currentUser.uid : "anonymous";
     const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+    
 
     try {
       const res = await fetch(`${API_BASE}/api/chat`, {
