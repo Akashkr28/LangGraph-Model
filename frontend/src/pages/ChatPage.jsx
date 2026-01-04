@@ -4,7 +4,6 @@ import { signOut, deleteUser } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useChatHistory } from '../context/ChatContext';
 import ChatSidebar from '../components/ChatSidebar';
-import ThemeToggle from '../components/ThemeToggle';
 import './ChatPage.css';
 
 const SynapseLogo = () => (
@@ -193,7 +192,7 @@ export default function ChatPage() {
             </div>
             
             <div className="header-actions">
-              <ThemeToggle />
+              
               <button 
                 className="menu-toggle"
                 onClick={() => setShowMenu(!showMenu)}
