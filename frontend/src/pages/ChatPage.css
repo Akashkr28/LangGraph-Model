@@ -1,11 +1,21 @@
 /* Chat Page Container */
 .chat-page {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+  height: 100vh;       /* Force full viewport height */
+  width: 100vw;
+  overflow: hidden;    /* Prevent the whole page from scrolling */
+  background: linear-gradient(to bottom, var(--bg-primary, #f8f9fa) 0%, var(--bg-secondary, #e9ecef) 100%);
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  overflow: hidden;
+}
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;        /* Take full height of parent */
+  overflow: hidden;    /* CRITICAL: Stops this container from expanding beyond screen */
+  position: relative;
+  min-width: 0;        /* Prevents flex items from overflowing horizontally */
 }
 
 /* Header */
@@ -137,15 +147,20 @@
 
 /* Messages Container */
 .messages-container {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1;             /* Grow to fill available space */
+  overflow-y: auto;    /* Enable Vertical Scroll */
+  min-height: 0;       /* CRITICAL FIX: Allows flex container to shrink below content size */
   padding: 32px 16px;
   scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
 }
 
 .messages-inner {
   max-width: 900px;
+  width: 100%;
   margin: 0 auto;
+  /* Ensure this doesn't have 'height: 100%' or it will fight the scroll */
 }
 
 /* Empty State */
@@ -301,34 +316,63 @@
   margin: 0;
 }
 
-/* Markdown Styling */
+/* Markdown Styling - Better Code Block Rendering */
+.bot-message {
+  background: #fff;
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
 .bot-message p {
   margin: 0 0 12px 0;
+  
 }
 
 .bot-message p:last-child {
   margin-bottom: 0;
 }
 
+/* Inline code */
 .bot-message code {
   background: #f5f5f5;
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 14px;
-  font-family: 'Courier New', monospace;
+  font-family: 'Courier New', Monaco, monospace;
+  color: #e83e8c;
+  border: 1px solid #e0e0e0;
 }
 
+/* Code blocks */
 .bot-message pre {
-  background: #f5f5f5;
-  padding: 12px;
+  background: #2d2d2d;
+  padding: 16px;
   border-radius: 8px;
   overflow-x: auto;
   margin: 12px 0;
+  border: 1px solid #404040;
+}
+
+.bot-message pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  color: #f8f8f2;
+  font-size: 14px;
+  line-height: 1.5;
+  display: block;
 }
 
 .bot-message ul, .bot-message ol {
   margin: 8px 0;
   padding-left: 24px;
+  color: #000;
+}
+
+.bot-message li {
+  margin: 4px 0;
+  color: #000;
 }
 
 /* Typing Indicator */
@@ -390,8 +434,12 @@
   padding: 8px 8px 8px 24px;
   transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  width: 600px;
+  
+  /* --- FIX START --- */
+  width: 100%;           /* Fill the available space */
+  max-width: 600px;      /* But don't get wider than 600px on desktop */
   min-height: 56px;
+  /* --- FIX END --- */
 }
 
 .input-box:focus-within {
@@ -490,6 +538,8 @@
 }
 
 /* Scrollbar Styling */
+/* --- SCROLLBAR STYLING --- */
+
 .messages-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -499,12 +549,21 @@
 }
 
 .messages-container::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
 
 .messages-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar */
+.dark .messages-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .messages-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Responsive Design */
