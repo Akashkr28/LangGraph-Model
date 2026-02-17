@@ -1,3 +1,29 @@
+/* Light mode variables */
+:root {
+  --text-primary: #0a0a0a;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --button-primary: #0a0a0a;
+  --button-primary-hover: #2d2d2d;
+  --bg-primary: #ffffff;
+  --input-bg: #f6f7fb;
+  --accent-color: #2f81f7;
+}
+
+/* Dark mode variables */
+.dark {
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --text-tertiary: #666666;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --button-primary: #ffffff;
+  --button-primary-hover: #e0e0e0;
+  --bg-primary: #1a1d29;
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --accent-color: #2f81f7;
+}
+
 .sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -293,3 +319,78 @@
       display: block;
     }
   }
+
+  /* Dark mode variables */
+.dark {
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --text-tertiary: #666666;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --button-primary: #ffffff;
+  --button-primary-hover: #e0e0e0;
+  --bg-primary: #1a1d29;
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --accent-color: #2f81f7;
+}
+
+/* Fix sidebar background for light mode */
+.chat-sidebar {
+  background: #ffffff;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Fix dark mode sidebar background */
+.dark .chat-sidebar {
+  background: #1a1d29;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Fix chat item hover for light mode */
+.chat-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dark .chat-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Fix close button for light mode */
+.close-sidebar-btn {
+  color: #555;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.close-sidebar-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+}
+
+.dark .close-sidebar-btn {
+  color: #aaa;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .close-sidebar-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* Fix sidebar header border */
+.sidebar-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark .sidebar-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Fix chat item icon */
+.chat-item-icon {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.dark .chat-item-icon {
+  background: rgba(255, 255, 255, 0.06);
+}
