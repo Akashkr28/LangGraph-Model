@@ -108,93 +108,216 @@
     gap: 40px;
   }
   
-  .shapes-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ============================================
+   SYNAPSE - Realistic 4K Bubble Upgrade
+   Replace your existing .shape styles with these
+   ============================================ */
+
+/* Base bubble - photorealistic sphere effect */
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+
+  /* Core 3D sphere illusion */
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(240, 240, 240, 0.85) 20%,
+    rgba(210, 210, 215, 0.75) 45%,
+    rgba(180, 180, 190, 0.6) 65%,
+    rgba(150, 150, 165, 0.4) 80%,
+    rgba(120, 120, 140, 0.2) 100%
+  );
+
+  /* Layered shadows for depth */
+  box-shadow:
+    /* Outer ambient shadow */
+    0 40px 80px rgba(0, 0, 0, 0.18),
+    0 20px 40px rgba(0, 0, 0, 0.12),
+    /* Inner rim light (bottom right dark) */
+    inset -20px -20px 40px rgba(0, 0, 0, 0.08),
+    /* Inner highlight (top left bright) */
+    inset 8px 8px 20px rgba(255, 255, 255, 0.9),
+    /* Subtle contact shadow */
+    0 60px 40px -30px rgba(0, 0, 0, 0.1);
+
+  /* Smooth glass surface */
+  backdrop-filter: blur(2px);
+}
+
+/* Specular highlight pseudo-element */
+.shape::before {
+  content: '';
+  position: absolute;
+  top: 12%;
+  left: 15%;
+  width: 35%;
+  height: 28%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.6) 40%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  filter: blur(4px);
+}
+
+/* Secondary subtle rim light */
+.shape::after {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  right: 12%;
+  width: 20%;
+  height: 15%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 50%;
+  filter: blur(6px);
+}
+
+/* Individual bubble sizes & positions (unchanged from your original) */
+.shape-1 {
+  width: 280px;
+  height: 280px;
+  top: 15%;
+  left: 20%;
+  animation-delay: 0s;
+  animation-duration: 9s;
+}
+
+.shape-2 {
+  width: 180px;
+  height: 180px;
+  top: 25%;
+  left: 15%;
+  animation-delay: 1s;
+  animation-duration: 7s;
+}
+
+.shape-3 {
+  width: 350px;
+  height: 350px;
+  top: 30%;
+  right: 15%;
+  animation-delay: 2s;
+  animation-duration: 11s;
+}
+
+.shape-4 {
+  width: 220px;
+  height: 220px;
+  bottom: 20%;
+  right: 25%;
+  animation-delay: 1.5s;
+  animation-duration: 8.5s;
+}
+
+.shape-5 {
+  width: 120px;
+  height: 120px;
+  top: 20%;
+  right: 30%;
+  animation-delay: 0.5s;
+  animation-duration: 6.5s;
+}
+
+.shape-6 {
+  width: 90px;
+  height: 90px;
+  bottom: 30%;
+  left: 25%;
+  animation-delay: 2.5s;
+  animation-duration: 7.5s;
+}
+
+.shape-7 {
+  width: 160px;
+  height: 160px;
+  top: 60%;
+  right: 20%;
+  animation-delay: 1.8s;
+  animation-duration: 10s;
+}
+
+/* Smoother, more natural float animation */
+@keyframes float {
+  0% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
   }
-  
+  20% {
+    transform: translate(8px, -18px) scale(1.02) rotate(1deg);
+  }
+  40% {
+    transform: translate(-6px, -8px) scale(0.98) rotate(-0.5deg);
+  }
+  60% {
+    transform: translate(-12px, 12px) scale(1.01) rotate(0.8deg);
+  }
+  80% {
+    transform: translate(10px, 6px) scale(0.99) rotate(-1deg);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+}
+
+/* ============================================
+   DARK MODE - Frosted glass / pearl bubbles
+   ============================================ */
+.dark .shape {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(220, 225, 235, 0.35) 20%,
+    rgba(180, 190, 210, 0.2) 45%,
+    rgba(140, 155, 180, 0.12) 65%,
+    rgba(100, 120, 155, 0.06) 80%,
+    rgba(60, 80, 120, 0.02) 100%
+  );
+
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.5),
+    0 20px 40px rgba(0, 0, 0, 0.35),
+    inset -15px -15px 35px rgba(0, 0, 0, 0.2),
+    inset 8px 8px 20px rgba(255, 255, 255, 0.25),
+    0 0 60px rgba(120, 160, 255, 0.04),
+    0 60px 40px -30px rgba(0, 0, 0, 0.4);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dark .shape::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.3) 40%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.dark .shape::after {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(180, 200, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* ============================================
+   PERFORMANCE: Reduce motion for accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
   .shape {
-    position: absolute;
-    background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 100%);
-    border-radius: 50%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-    animation: float 6s ease-in-out infinite;
+    animation: none;
   }
-  
-  .shape-1 {
-    width: 280px;
-    height: 280px;
-    top: 15%;
-    left: 20%;
-    animation-delay: 0s;
-  }
-  
-  .shape-2 {
-    width: 180px;
-    height: 180px;
-    top: 25%;
-    left: 15%;
-    animation-delay: 1s;
-  }
-  
-  .shape-3 {
-    width: 350px;
-    height: 350px;
-    top: 30%;
-    right: 15%;
-    animation-delay: 2s;
-  }
-  
-  .shape-4 {
-    width: 220px;
-    height: 220px;
-    bottom: 20%;
-    right: 25%;
-    animation-delay: 1.5s;
-  }
-  
-  .shape-5 {
-    width: 120px;
-    height: 120px;
-    top: 20%;
-    right: 30%;
-    animation-delay: 0.5s;
-  }
-  
-  .shape-6 {
-    width: 90px;
-    height: 90px;
-    bottom: 30%;
-    left: 25%;
-    animation-delay: 2.5s;
-  }
-  
-  .shape-7 {
-    width: 160px;
-    height: 160px;
-    top: 60%;
-    right: 20%;
-    animation-delay: 1.8s;
-  }
-  
-  @keyframes float {
-    0%, 100% {
-      transform: translate(0, 0) scale(1);
-    }
-    25% {
-      transform: translate(10px, -15px) scale(1.05);
-    }
-    50% {
-      transform: translate(-10px, 10px) scale(0.95);
-    }
-    75% {
-      transform: translate(15px, 5px) scale(1.02);
-    }
-  }
+}
   
   .main-logo {
     position: relative;
@@ -343,9 +466,12 @@
   background: linear-gradient(to bottom, #0f1117 0%, #1a1d29 100%);
 }
 
+/* Dark mode navbar */
 .dark .navbar {
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: rgba(15, 17, 23, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .dark .logo,

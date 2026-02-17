@@ -1,26 +1,42 @@
 .landing-page {
-  /* 1. Allow it to grow if content is tall (mobile), but at least fill screen (desktop) */
   min-height: 100vh; 
-  width: 100%; /* Use % instead of vw to avoid scrollbar-width issues */
-  
-  /* 2. visual styling */
+  width: 100%; 
   background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
-  
-  /* 3. layout centering */
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  /* 4. Padding is fine, but box-sizing ensures it doesn't add to 100vh */
   padding: 40px 20px;
   box-sizing: border-box; 
-  
-  /* 5. VITAL: Relative positioning for the absolute blobs */
   position: relative;
-  
-  /* 6. Hide ONLY horizontal overflow so blobs don't widen the page */
   overflow-x: hidden; 
 }
+
+/* ============================================
+   BLOBS - Organic morphing shapes
+   ============================================ */
+   .landing-blob {
+    position: absolute;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    animation: morph 8s ease-in-out infinite;
+  
+    /* Realistic 3D surface */
+    background: radial-gradient(
+      circle at 35% 30%,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(235, 235, 240, 0.8) 25%,
+      rgba(205, 205, 215, 0.65) 50%,
+      rgba(170, 170, 185, 0.45) 70%,
+      rgba(140, 140, 160, 0.25) 85%,
+      rgba(110, 110, 135, 0.1) 100%
+    );
+  
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.15),
+      0 20px 40px rgba(0, 0, 0, 0.1),
+      inset -25px -25px 50px rgba(0, 0, 0, 0.07),
+      inset 10px 10px 25px rgba(255, 255, 255, 0.85),
+      0 80px 50px -40px rgba(0, 0, 0, 0.08);
+  }
   
   /* Background decorative shapes */
   .landing-shapes {
@@ -29,66 +45,130 @@
     left: 0;
     width: 100%;
     height: 100%;
-    
-    /* This ensures blobs that fly off-screen don't create scrollbars */
     overflow: hidden; 
-    
-    /* Push it behind everything */
     z-index: 0; 
-    pointer-events: none; /* Let clicks pass through */
+    pointer-events: none;
 }
   
-  .landing-blob {
-    position: absolute;
-    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+/* Specular highlight on blob */
+.landing-blob::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 15%;
+  width: 40%;
+  height: 30%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.5) 40%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  filter: blur(6px);
+}
+
+.landing-blob-1 {
+  width: 400px;
+  height: 380px;
+  top: 10%;
+  left: -5%;
+  animation-delay: 0s;
+  animation-duration: 9s;
+  opacity: 0.85;
+}
+
+.landing-blob-2 {
+  width: 350px;
+  height: 330px;
+  bottom: 15%;
+  right: -5%;
+  animation-delay: 2s;
+  animation-duration: 11s;
+  opacity: 0.85;
+}
+  
+@keyframes morph {
+  0%, 100% {
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
-    animation: morph 8s ease-in-out infinite;
+    transform: translate(0, 0) rotate(0deg);
   }
-  
-  .landing-blob-1 {
-    width: 400px;
-    height: 380px;
-    top: 10%;
-    left: -5%;
-    animation-delay: 0s;
-    opacity: 0.7;
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    transform: translate(10px, -20px) rotate(5deg);
   }
-  
-  .landing-blob-2 {
-    width: 350px;
-    height: 330px;
-    bottom: 15%;
-    right: -5%;
-    animation-delay: 2s;
-    opacity: 0.7;
+  50% {
+    border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
+    transform: translate(-10px, 15px) rotate(-5deg);
   }
-  
-  @keyframes morph {
-    0%, 100% {
-      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-      transform: translate(0, 0) rotate(0deg);
-    }
-    25% {
-      border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
-      transform: translate(10px, -20px) rotate(5deg);
-    }
-    50% {
-      border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
-      transform: translate(-10px, 15px) rotate(-5deg);
-    }
-    75% {
-      border-radius: 40% 70% 60% 30% / 40% 50% 60% 50%;
-      transform: translate(15px, 10px) rotate(3deg);
-    }
+  75% {
+    border-radius: 40% 70% 60% 30% / 40% 50% 60% 50%;
+    transform: translate(15px, 10px) rotate(3deg);
   }
+}
   
-  .landing-sphere {
+/* ============================================
+   SPHERES - Perfect 3D balls
+   ============================================ */
+   .landing-sphere {
     position: absolute;
-    background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0);
     border-radius: 50%;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
     animation: float 6s ease-in-out infinite;
+  
+    /* Core 3D sphere illusion */
+    background: radial-gradient(
+      circle at 35% 35%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(240, 240, 242) 20%,
+      rgba(210, 210, 218, 0.75) 45%,
+      rgba(180, 180, 192, 0.55) 65%,
+      rgba(150, 150, 168, 0.35) 80%,
+      rgba(120, 120, 145, 0.15) 100%
+    );
+  
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.15),
+      0 15px 30px rgba(0, 0, 0, 0.1),
+      inset -12px -12px 25px rgba(0, 0, 0, 0.08),
+      inset 6px 6px 15px rgba(255, 255, 255, 0.9),
+      0 50px 30px -25px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Specular highlight on sphere */
+  .landing-sphere::before {
+    content: '';
+    position: absolute;
+    top: 12%;
+    left: 16%;
+    width: 35%;
+    height: 28%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.55) 40%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    transform: rotate(-25deg);
+    filter: blur(3px);
+  }
+  
+  /* Subtle rim light on sphere */
+  .landing-sphere::after {
+    content: '';
+    position: absolute;
+    bottom: 12%;
+    right: 14%;
+    width: 18%;
+    height: 14%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    filter: blur(5px);
   }
   
   .landing-sphere-1 {
@@ -97,6 +177,7 @@
     top: 20%;
     right: 15%;
     animation-delay: 1s;
+    animation-duration: 7s;
   }
   
   .landing-sphere-2 {
@@ -105,6 +186,7 @@
     top: 60%;
     left: 10%;
     animation-delay: 2s;
+    animation-duration: 8s;
   }
   
   .landing-sphere-3 {
@@ -113,20 +195,108 @@
     bottom: 25%;
     right: 20%;
     animation-delay: 0.5s;
+    animation-duration: 6.5s;
   }
   
   @keyframes float {
-    0%, 100% {
-      transform: translate(0, 0) scale(1);
+    0% {
+      transform: translate(0px, 0px) scale(1);
     }
     25% {
-      transform: translate(15px, -20px) scale(1.05);
+      transform: translate(12px, -18px) scale(1.03);
     }
     50% {
-      transform: translate(-15px, 15px) scale(0.95);
+      transform: translate(-10px, 12px) scale(0.97);
     }
     75% {
-      transform: translate(20px, 10px) scale(1.02);
+      transform: translate(16px, 8px) scale(1.01);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+  
+  /* ============================================
+     DARK MODE
+     ============================================ */
+  .dark .landing-blob {
+    background: radial-gradient(
+      circle at 35% 30%,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(210, 215, 230, 0.28) 25%,
+      rgba(170, 180, 205, 0.16) 50%,
+      rgba(130, 145, 175, 0.09) 70%,
+      rgba(90, 110, 145, 0.04) 85%,
+      rgba(50, 70, 110, 0.01) 100%
+    );
+  
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.5),
+      0 20px 40px rgba(0, 0, 0, 0.35),
+      inset -20px -20px 40px rgba(0, 0, 0, 0.2),
+      inset 10px 10px 25px rgba(255, 255, 255, 0.18),
+      0 0 80px rgba(100, 140, 255, 0.03),
+      0 80px 50px -40px rgba(0, 0, 0, 0.45);
+  
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    opacity: 0.9;
+  }
+  
+  .dark .landing-blob::before {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.25) 40%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  
+  .dark .landing-sphere {
+    background: radial-gradient(
+      circle at 35% 35%,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(220, 225, 238, 0.35) 20%,
+      rgba(180, 190, 212, 0.2) 45%,
+      rgba(140, 155, 182, 0.12) 65%,
+      rgba(100, 120, 158, 0.06) 80%,
+      rgba(60, 80, 122, 0.02) 100%
+    );
+  
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.5),
+      0 15px 30px rgba(0, 0, 0, 0.35),
+      inset -10px -10px 22px rgba(0, 0, 0, 0.2),
+      inset 6px 6px 15px rgba(255, 255, 255, 0.22),
+      0 0 50px rgba(120, 160, 255, 0.04),
+      0 50px 30px -25px rgba(0, 0, 0, 0.45);
+  
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .landing-sphere::before {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0.28) 40%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  
+  .dark .landing-sphere::after {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(180, 200, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  
+  /* ============================================
+     PERFORMANCE
+     ============================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .landing-blob,
+    .landing-sphere {
+      animation: none;
     }
   }
   
